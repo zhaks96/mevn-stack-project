@@ -152,7 +152,7 @@ export default {
   },
   methods:{
     loadPosts: async function(){
-      axios.get('/api/get').then((response) => {
+      await axios.get('/api/get').then((response) => {
         this.posts = response.data
       }).catch((error) => {
         console.error(error)
@@ -173,7 +173,7 @@ export default {
         this.editedIndex = -1
       })
     },
-    savePost: async function(){
+    savePost: function(){
       if(this.editedIndex > -1){
         this.updatePost()
       }else{
@@ -197,8 +197,8 @@ export default {
       this.postData = Object.assign({}, item)
       this.dialog = true
     },
-    updatePost(){
-      axios.put(`/api/update-post/${this.postData._id}`, this.postData).then((response) => {
+    async updatePost(){
+      await axios.put(`/api/update-post/${this.postData._id}`, this.postData).then((response) => {
         console.log(response)
         this.close()
         this.loadPosts()
@@ -219,12 +219,12 @@ export default {
         cancelButtonColor: '#d63031',
         confirmButtonText: 'Yes',
         cancelButtonText: 'No',
-      }).then((result) => {
+      }).then(async (result) => {
         console.log(result)
         if(result.value){
           try {
             const indexofArrayPost = this.posts.findIndex(post => post._id === item._id)
-            axios.delete(`/api/remove-post/${item._id}`).then(() => {
+            await axios.delete(`/api/remove-post/${item._id}`).then(() => {
               this.posts.splice(indexofArrayPost, 1)
             }).catch((error) => {
               console.error(error)
